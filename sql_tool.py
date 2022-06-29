@@ -29,6 +29,9 @@ def add_user():
 
         print(f"Add new user: {name}")
 
+    else:
+        print(f"Duplicated user name {name}")
+
         return name
 
 
@@ -56,7 +59,6 @@ def dup_search(name):
         return True
 
     else:
-        print(f"Duplicated user name {name}")
         return False
 
 
@@ -96,9 +98,22 @@ def delete_user():
 def edit_user():
     name = input("User name >")
 
-    msg = Message.select().where(Message.Name == name).get()
-    msg.user = "Tom Ford"
-    msg.save()
+    # ユーザが登録されているか確認
+    dup_check = dup_search(name)
+
+    if dup_check == False:
+        msg = Message.select().where(Message.Name == name).get()
+        new_user = input(f"New user name ({name}) >")
+        new_age = input(f"New user age ({msg.Age}) >")
+
+        msg.Name = new_user
+        msg.Age = new_age
+        msg.save()
+
+        print(f"Update user: {new_user}")
+
+    else:
+        print(f"Sorry, {name} is not found")
 
 
 def main():
